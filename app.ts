@@ -5,19 +5,27 @@ import "express-async-errors";
 import connectDB from "./db/connect";
 // accessRoute middleware
 import { accessRoute } from "./middleware/accessRoute";
+// error handler middleware
+import { errorHandler } from "./middleware/errorHandler";
+import { notFound } from "./middleware/notFound";
 // routers
 import authRouter from "./routes/auth";
 import planRouter from "./routes/plan";
 
-// body parsing middleware
+// body parsing middleware / other middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(errorHandler);
 
+// routes
 app.get("/", (req: Request, res: Response): void => {
   res.send("<h1>Hello World!</h1>");
 });
 app.use("/api/v1/auth", authRouter);
-app.use("/api/v1/plan", accessRoute, planRouter);
+app.use("/api/v1/plan", accessRoute, errorHandler, planRouter);
+
+// 404 error handler middleware
+app.all("*", notFound);
 
 const PORT = 3000;
 

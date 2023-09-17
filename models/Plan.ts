@@ -104,7 +104,7 @@ const PlanSchema = new mongoose.Schema<IPlan>(
     // },
     createdBy: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Plan",
+      ref: "Auth",
       required: [true, "Please provide Auth id"],
     },
   },

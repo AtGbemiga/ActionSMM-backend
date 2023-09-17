@@ -19,7 +19,7 @@ export const accessRoute = async (
   const accessRouteHeader = req.headers.authorization as string;
 
   if (!accessRouteHeader || !accessRouteHeader.startsWith("Bearer ")) {
-    throw new Error("Authentication Invalid");
+    return next(new Error("Authentication Invalid"));
   }
 
   const token = accessRouteHeader.split(" ")[1];
@@ -34,6 +34,6 @@ export const accessRoute = async (
     };
     next();
   } catch (error) {
-    throw new Error("Authentication Invalid");
+    throw new Error("Internal Server Error, please try again");
   }
 };

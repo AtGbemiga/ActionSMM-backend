@@ -1,6 +1,6 @@
 import nodemailer from "nodemailer";
 
-export default function nodemailerFunc(msg: string, email: string) {
+export default function nodemailerFunc(msg: string, email: string): void {
   const transporter = nodemailer.createTransport({
     host: "mail.actionsmm.com.ng",
     port: 465,

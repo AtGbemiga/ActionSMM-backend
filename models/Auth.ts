@@ -19,10 +19,12 @@ const AuthSchema = new mongoose.Schema<IAuth>(
         "Please provide valid email",
       ],
       unique: true,
+      lowercase: true,
     },
     password: {
       type: String,
       required: [true, "Please provide password"],
+      minlength: 6,
     },
   },
   { timestamps: true }
@@ -39,13 +41,9 @@ AuthSchema.methods.createJWT = function () {
   if (!process.env.JWT_SECRET) {
     throw new Error("JWT_SECRET is not defined in your environment.");
   }
-  return jwt.sign(
-    { userId: this._id, email: this.email },
-    process.env.JWT_SECRET,
-    {
-      expiresIn: process.env.JWT_LIFETIME,
-    }
-  );
+  return jwt.sign({ authId: this._id }, process.env.JWT_SECRET, {
+    expiresIn: process.env.JWT_LIFETIME,
+  });
 };
 
 // compare password

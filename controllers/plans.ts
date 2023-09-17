@@ -4,13 +4,15 @@ import { upload } from "../multer/multer";
 import cloudinary from "../cloudinary/cloudinary";
 import multer from "multer";
 
+export const getPlan = async (req: Request, res: Response) => {
+  const plan = await Plan.find({ createdBy: req.user?.authId });
+  const count = await Plan.countDocuments({ createdBy: req.user?.authId });
+
+  res.status(200).json({ plan, count });
+};
+
 export const addPlan = async (req: Request, res: Response) => {
-  const simulateError = true; // Set this to true to simulate an error
-
-  if (simulateError) {
-    throw new Error("Simulated error during file upload");
-  }
-
+  // res.json(req.user);
   upload.array("socialMediaPics", 5)(req, res, async (error) => {
     if (error) {
       if (error.message === "Unexpected field") {
@@ -45,7 +47,7 @@ export const addPlan = async (req: Request, res: Response) => {
     }
 
     req.body.socialMediaPics = picturesUrl;
-    // req.body.createdBy = req.user.userId
+    req.body.createdBy = req.user?.authId;
 
     const plan = await Plan.create({ ...req.body });
     res.status(201).json({ plan });

@@ -1,8 +1,8 @@
 import { Router } from "express";
 const router = Router();
 
-import { addPlan } from "../controllers/plans";
+import { addPlan, getPlan } from "../controllers/plans";
 
-router.route("/details").post(addPlan);
+router.route("/details").post(addPlan).get(getPlan);
 
 export default router;

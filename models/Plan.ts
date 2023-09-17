@@ -8,7 +8,11 @@ interface IPlan {
   aboutYourBusiness?: string;
   cta: string[];
   startDate: string;
+  dueDate: string;
   socialMediaPics?: string[];
+  status: "Processing" | "Active" | "Expired" | "Declined" | "Refunded";
+  chat?: string[];
+  accounts?: string[];
   createdBy: object;
 }
 
@@ -37,10 +41,10 @@ const PlanSchema = new mongoose.Schema<IPlan>(
       type: String,
       required: [true, "Please provide business name"],
     },
-    // make regex check for it to start with https:// or http://
+    // make regex check for w 0 or 3 times e.g http://www.a.com or http://a.com
     website: {
       type: String,
-      // match: /^/,
+      match: /^https?:\/\/\w.*$/i,
     },
     aboutYourBusiness: String,
     cta: {
@@ -52,6 +56,7 @@ const PlanSchema = new mongoose.Schema<IPlan>(
         },
       },
       message: `Must contain between 1 and 100,000 cta`,
+      required: [true, "Must provide at least 1 cta"],
     },
     startDate: {
       type: String,
@@ -60,7 +65,50 @@ const PlanSchema = new mongoose.Schema<IPlan>(
       // match: /^/,
     },
     socialMediaPics: [String],
+    dueDate: {
+      type: String,
+      required: [true, "Must provide plan due date"],
+      // regex that checks that the match matches the regex yyyy-mm-dd
+      // match: /^/,
+    },
+    status: {
+      type: String,
+      default: "Processing",
+      enum: {
+        values: ["Processing", "Active", "Expired", "Declined", "Refunded"],
+        message: "{VALUE} is not supported",
+      },
+    },
+    chat: [String],
+    // accounts: {
+    //   facebook: {
+    //     type: String,
+    //     // regex that matches facebook page url
+    //     //match: /^/
+    //   },
+    //   instagram: {
+    //     type: String,
+    //     // regex that matches IG page url
+    //     //match: /^/
+    //   },
+    //   linkedin: {
+    //     type: String,
+    //     // regex that matches linkedin page url
+    //     //match: /^/
+    //   },
+    //   x: {
+    //     type: String,
+    //     // regex that matches x page url
+    //     //match: /^/
+    //   },
+    // },
+    createdBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Plan",
+      required: [true, "Please provide Auth id"],
+    },
   },
+
   { timestamps: true }
 );
 

@@ -16,6 +16,14 @@ import planRouter from "./routes/plan";
 import payStackRouter from "./routes/paystack";
 import profileRouter from "./routes/profile";
 
+app.use((req, res, next) => {
+  res.setHeader("Access-Control-Allow-Origin", "*"); // Allow requests from all origins
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE"); // Allow all HTTP methods
+  res.setHeader("Access-Control-Allow-Headers", "*"); // Allow all HTTP headers
+
+  next();
+});
+
 app.set("trust proxy", 1);
 
 // cors

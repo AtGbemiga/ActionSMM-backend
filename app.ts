@@ -1,4 +1,4 @@
-import express, { Request, Response, NextFunction } from "express";
+import express, { Request, Response } from "express";
 const app = express();
 import "dotenv/config";
 import helmet from "helmet";
@@ -16,30 +16,9 @@ import planRouter from "./routes/plan";
 import payStackRouter from "./routes/paystack";
 import profileRouter from "./routes/profile";
 
-const allowCors = (req: Request, res: Response, next: NextFunction) => {
-  res.setHeader("Access-Control-Allow-Credentials", "true");
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader(
-    "Access-Control-Allow-Methods",
-    "GET,OPTIONS,PATCH,DELETE,POST,PUT"
-  );
-  res.setHeader(
-    "Access-Control-Allow-Headers",
-    "X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version"
-  );
-
-  if (req.method === "OPTIONS") {
-    res.status(200).end();
-    return;
-  }
-
-  next();
-};
-
 // cors
 app.use(helmet());
 app.use(cors());
-app.use(allowCors);
 
 // body parsing middleware / other middleware
 app.use(express.json());

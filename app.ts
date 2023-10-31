@@ -2,7 +2,7 @@ import express, { Request, Response } from "express";
 const app = express();
 import "dotenv/config";
 import helmet from "helmet";
-import cors from "cors";
+const cors = require("cors");
 import "express-async-errors";
 import connectDB from "./db/connect";
 // accessRoute middleware
@@ -16,12 +16,12 @@ import planRouter from "./routes/plan";
 import payStackRouter from "./routes/paystack";
 import profileRouter from "./routes/profile";
 
+app.use(express.json());
 // cors
 app.use(helmet());
 app.use(cors());
 
 // body parsing middleware / other middleware
-app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(errorHandler);
 

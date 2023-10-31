@@ -30,7 +30,7 @@ export const paystack = (req: Request, res: Response): void => {
 
       respaystack.on("end", () => {
         res.send(data);
-        console.log(JSON.parse(data));
+        // console.log(JSON.parse(data));
       });
     })
     .on("error", (error) => {
@@ -69,7 +69,7 @@ export const starter = (req: Request, res: Response): void => {
 
       respaystack.on("end", () => {
         res.send(data);
-        console.log(JSON.parse(data));
+        // console.log(JSON.parse(data));
       });
     })
     .on("error", (error) => {
@@ -108,7 +108,7 @@ export const pro = (req: Request, res: Response): void => {
 
       respaystack.on("end", () => {
         res.send(data);
-        console.log(JSON.parse(data));
+        // console.log(JSON.parse(data));
       });
     })
     .on("error", (error) => {
@@ -147,7 +147,7 @@ export const supreme = (req: Request, res: Response): void => {
 
       respaystack.on("end", () => {
         res.send(data);
-        console.log(JSON.parse(data));
+        // console.log(JSON.parse(data));
       });
     })
     .on("error", (error) => {
@@ -186,7 +186,7 @@ export const starterPlus = (req: Request, res: Response): void => {
 
       respaystack.on("end", () => {
         res.send(data);
-        console.log(JSON.parse(data));
+        // console.log(JSON.parse(data));
       });
     })
     .on("error", (error) => {
@@ -225,7 +225,7 @@ export const proPlus = (req: Request, res: Response): void => {
 
       respaystack.on("end", () => {
         res.send(data);
-        console.log(JSON.parse(data));
+        // console.log(JSON.parse(data));
       });
     })
     .on("error", (error) => {
@@ -264,7 +264,7 @@ export const supremePlus = (req: Request, res: Response): void => {
 
       respaystack.on("end", () => {
         res.send(data);
-        console.log(JSON.parse(data));
+        // console.log(JSON.parse(data));
       });
     })
     .on("error", (error) => {

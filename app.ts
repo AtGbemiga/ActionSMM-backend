@@ -20,7 +20,11 @@ app.set("trust proxy", 1);
 
 // cors
 app.use(helmet());
-app.use(cors());
+app.use(
+  cors({
+    origin: "http://127.0.0.1:3001",
+  })
+);
 
 // body parsing middleware / other middleware
 app.use(express.json());

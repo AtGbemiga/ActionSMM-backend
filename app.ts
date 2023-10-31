@@ -2,7 +2,7 @@ import express, { Request, Response } from "express";
 const app = express();
 import "dotenv/config";
 import helmet from "helmet";
-const cors = require("cors");
+import cors from "cors";
 import "express-async-errors";
 import connectDB from "./db/connect";
 // accessRoute middleware

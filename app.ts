@@ -20,14 +20,15 @@ import profileRouter from "./routes/profile";
 app.use(helmet());
 app.use(cors());
 
-app.use((req, res, next) => {
-  res.setHeader(
+// Add this middleware before your other route handlers
+app.options("*", (req, res) => {
+  res.header(
     "Access-Control-Allow-Origin",
     "https://action-smm-backend.vercel.app"
-  );
-  res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
-  next();
+  ); // Replace with the origin of your frontend
+  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
+  res.header("Access-Control-Allow-Headers", "Content-Type");
+  res.status(204).end();
 });
 
 // body parsing middleware / other middleware

@@ -2,7 +2,7 @@ import express, { Request, Response } from "express";
 const app = express();
 import "dotenv/config";
 import helmet from "helmet";
-// const cors = require("cors");
+const cors = require("cors");
 import "express-async-errors";
 import connectDB from "./db/connect";
 // accessRoute middleware
@@ -20,7 +20,7 @@ app.set("trust proxy", 1);
 
 // cors
 app.use(helmet());
-// app.use(cors());
+app.use(cors());
 
 // body parsing middleware / other middleware
 app.use(express.json());

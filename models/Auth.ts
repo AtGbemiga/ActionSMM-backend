@@ -25,6 +25,7 @@ const AuthSchema = new mongoose.Schema<IAuth>(
       type: String,
       required: [true, "Please provide password"],
       minlength: 6,
+      maxlength: 64,
     },
   },
   { timestamps: true }

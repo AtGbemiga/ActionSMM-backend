@@ -14,10 +14,11 @@ export const register = async (req: Request, res: Response): Promise<void> => {
   // nodemailerFunc(registerMsg, email);
   res.cookie("token", token, {
     httpOnly: true,
-    expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+    // date interpretation days * hours * minutes * seconds * milliseconds
+    expires: new Date(Date.now() + 60 * 24 * 60 * 60 * 1000),
   });
 
-  res.status(201).json({ token });
+  res.status(201).json({ token, email });
 };
 
 export const login = async (
@@ -40,9 +41,9 @@ export const login = async (
   const token = user.createJWT();
   res.cookie("token", token, {
     httpOnly: true,
-    expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+    expires: new Date(Date.now() + 60 * 24 * 60 * 60 * 1000),
   });
-  res.status(200).json({ token });
+  res.status(200).json({ token, email });
 };
 
 export const logout = (req: Request, res: Response): void => {
@@ -69,5 +70,5 @@ export const resetPassword = async (
   const token = user.createJWT();
   await user.save();
 
-  res.status(200).json({ token });
+  res.status(200).json({ token, email });
 };

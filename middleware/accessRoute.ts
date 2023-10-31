@@ -15,7 +15,7 @@ export const accessRoute = async (
   req: Request,
   res: Response,
   next: NextFunction
-) => {
+): Promise<void> => {
   const accessRouteHeader = req.headers.authorization as string;
 
   if (!accessRouteHeader || !accessRouteHeader.startsWith("Bearer ")) {

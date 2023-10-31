@@ -1,6 +1,8 @@
 import express, { Request, Response } from "express";
 const app = express();
-require("dotenv").config();
+import "dotenv/config";
+import helmet from "helmet";
+import cors from "cors";
 import "express-async-errors";
 import connectDB from "./db/connect";
 // accessRoute middleware
@@ -11,6 +13,12 @@ import { notFound } from "./middleware/notFound";
 // routers
 import authRouter from "./routes/auth";
 import planRouter from "./routes/plan";
+import payStackRouter from "./routes/paystack";
+import profileRouter from "./routes/profile";
+
+// cors
+app.use(helmet());
+app.use(cors());
 
 // body parsing middleware / other middleware
 app.use(express.json());
@@ -23,6 +31,8 @@ app.get("/", (req: Request, res: Response): void => {
 });
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/plan", accessRoute, errorHandler, planRouter);
+app.use("/api/v1/paystack", payStackRouter);
+app.use("/api/v1/profile", profileRouter);
 
 // 404 error handler middleware
 app.all("*", notFound);

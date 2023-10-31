@@ -1,28 +1,32 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import Plan from "../models/Plan";
 import { upload } from "../multer/multer";
 import cloudinary from "../cloudinary/cloudinary";
 import multer from "multer";
 
-export const getPlan = async (req: Request, res: Response) => {
+export const getPlan = async (req: Request, res: Response): Promise<void> => {
   const plan = await Plan.find({ createdBy: req.user?.authId });
   const count = await Plan.countDocuments({ createdBy: req.user?.authId });
 
   res.status(200).json({ plan, count });
 };
 
-export const addPlan = async (req: Request, res: Response) => {
+export const addPlan = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
   // res.json(req.user);
   upload.array("socialMediaPics", 5)(req, res, async (error) => {
     if (error) {
       if (error.message === "Unexpected field") {
-        return res.status(400).json({ error: "Max of 5 images allowed" });
+        res.status(400).json({ error: "Max of 5 images allowed" });
       }
       if (error instanceof multer.MulterError) {
         throw new Error(`${error}`);
       } else if (req.files === undefined) {
         console.log("No image uploaded but this should still work");
-      } else if (error) {
+      } else {
         console.error("Error uploading file to Cloudinary:", error);
         throw new Error("An error occurred when uploading");
       }
@@ -33,8 +37,7 @@ export const addPlan = async (req: Request, res: Response) => {
     for (const files of req.files as Express.Multer.File[]) {
       const uniqueIdentifier =
         Date.now() + "-" + Math.round(Math.random() * 1e9);
-      // const publicId = `${req.user.userId}_smi_${uniqueIdentifier}`
-      const publicId = `smi_${uniqueIdentifier}`;
+      const publicId = `${req.user?.authId}_smi_${uniqueIdentifier}`;
 
       const result = await cloudinary.uploader.upload(files.path, {
         public_id: publicId,
@@ -48,6 +51,31 @@ export const addPlan = async (req: Request, res: Response) => {
 
     req.body.socialMediaPics = picturesUrl;
     req.body.createdBy = req.user?.authId;
+
+    // convert the plan name sent by frontend to what's understood by the backend
+    switch (req.body.planName) {
+      case "Starter":
+        req.body.planName = "starter";
+        break;
+      case "Pro":
+        req.body.planName = "pro";
+        break;
+      case "Supreme":
+        req.body.planName = "supreme";
+        break;
+      case "Starter%20Plus":
+        req.body.planName = "starterPlus";
+        break;
+      case "Pro%20Plus":
+        req.body.planName = "proPlus";
+        break;
+      case "Supreme%20Plus":
+        req.body.planName = "supremePlus";
+        break;
+      default:
+        req.body.planName = "";
+        break;
+    }
 
     const plan = await Plan.create({ ...req.body });
     res.status(201).json({ plan });

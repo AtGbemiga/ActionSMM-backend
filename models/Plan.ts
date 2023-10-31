@@ -5,14 +5,19 @@ interface IPlan {
   personalName: string;
   businessName: string;
   website?: string;
-  aboutYourBusiness?: string;
+  aboutYourBusiness: string;
   cta: string[];
   startDate: string;
   dueDate: string;
-  socialMediaPics?: string[];
+  socialMediaPics?: FileList;
   status: "Processing" | "Active" | "Expired" | "Declined" | "Refunded";
   chat?: string[];
-  accounts?: string[];
+  accounts: {
+    one?: string;
+    two?: string;
+    three?: string;
+    four?: string;
+  };
   createdBy: object;
 }
 
@@ -41,10 +46,9 @@ const PlanSchema = new mongoose.Schema<IPlan>(
       type: String,
       required: [true, "Please provide business name"],
     },
-    // make regex check for w 0 or 3 times e.g http://www.a.com or http://a.com
     website: {
       type: String,
-      match: /^https?:\/\/\w.*$/i,
+      match: /^([https?]{4,5}):\/\/(www)?\.?(.+)\.([a-z]{2,5})(\.[a-z]+)?$/i,
     },
     aboutYourBusiness: String,
     cta: {
@@ -61,15 +65,15 @@ const PlanSchema = new mongoose.Schema<IPlan>(
     startDate: {
       type: String,
       required: [true, "Must provide plan start date"],
-      // regex that checks that the match matches the regex yyyy-mm-dd
-      // match: /^/,
+      // regex that matches mongodb date format
+      match: [/^\d{4}-\d{2}-\d{2}T23:00:00\.000Z/, "Must be a valid date"],
     },
     socialMediaPics: [String],
     dueDate: {
       type: String,
       required: [true, "Must provide plan due date"],
-      // regex that checks that the match matches the regex yyyy-mm-dd
-      // match: /^/,
+      // regex that matches mongodb date format
+      match: [/^\d{4}-\d{2}-\d{2}T23:00:00\.000Z/, "Must be a valid date"],
     },
     status: {
       type: String,
@@ -80,28 +84,28 @@ const PlanSchema = new mongoose.Schema<IPlan>(
       },
     },
     chat: [String],
-    // accounts: {
-    //   facebook: {
-    //     type: String,
-    //     // regex that matches facebook page url
-    //     //match: /^/
-    //   },
-    //   instagram: {
-    //     type: String,
-    //     // regex that matches IG page url
-    //     //match: /^/
-    //   },
-    //   linkedin: {
-    //     type: String,
-    //     // regex that matches linkedin page url
-    //     //match: /^/
-    //   },
-    //   x: {
-    //     type: String,
-    //     // regex that matches x page url
-    //     //match: /^/
-    //   },
-    // },
+    accounts: {
+      one: {
+        type: String,
+        // regex that matches facebook page url
+        //match: /^/
+      },
+      two: {
+        type: String,
+        // regex that matches IG page url
+        //match: /^/
+      },
+      three: {
+        type: String,
+        // regex that matches linkedin page url
+        //match: /^/
+      },
+      four: {
+        type: String,
+        // regex that matches x page url
+        //match: /^/
+      },
+    },
     createdBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Auth",
@@ -111,5 +115,18 @@ const PlanSchema = new mongoose.Schema<IPlan>(
 
   { timestamps: true }
 );
+
+// prints in the terminal Not in Postman
+// PlanSchema.pre("save", function () {
+//   const { facebook, instagram, linkedin, x } = this.accounts;
+//   if (
+//     facebook === undefined &&
+//     instagram === undefined &&
+//     linkedin === undefined &&
+//     x === undefined
+//   ) {
+//     throw new Error("provided.");
+//   }
+// });
 
 export default mongoose.model<IPlan>("Plan", PlanSchema);

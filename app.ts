@@ -37,7 +37,7 @@ app.use("/api/v1/paystack", payStackRouter);
 app.use("/api/v1/profile", profileRouter);
 
 // 404 error handler middleware
-app.all("*", notFound);
+// app.all("*", notFound);
 
 const PORT = 3000;
 

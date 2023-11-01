@@ -20,7 +20,7 @@ app.set("trust proxy", 1);
 
 // cors
 app.use(helmet());
-app.use(cors());
+app.options("*", cors());
 
 // body parsing middleware / other middleware
 app.use(express.json());

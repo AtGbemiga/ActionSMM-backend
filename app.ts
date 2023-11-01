@@ -4,6 +4,7 @@ import "dotenv/config";
 import helmet from "helmet";
 import "express-async-errors";
 import connectDB from "./db/connect";
+const cors = require("cors");
 // accessRoute middleware
 import { accessRoute } from "./middleware/accessRoute";
 // error handler middleware
@@ -19,6 +20,11 @@ app.set("trust proxy", 1);
 
 // cors
 app.use(helmet());
+app.use(
+  cors({
+    origin: "http://127.0.0.1:3001",
+  })
+);
 
 // body parsing middleware / other middleware
 app.use(express.json());

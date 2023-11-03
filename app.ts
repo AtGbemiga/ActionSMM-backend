@@ -43,7 +43,7 @@ app.use("/api/v1/profile", profileRouter);
 // 404 error handler middleware
 app.all("*", notFound);
 
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, async (): Promise<void> => {
   if (typeof process.env.MONGO_URI === "undefined") {

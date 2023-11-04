@@ -4,7 +4,7 @@ import "dotenv/config";
 import helmet from "helmet";
 import "express-async-errors";
 import connectDB from "./db/connect";
-const cors = require("cors");
+import cors from "cors";
 // accessRoute middleware
 import { accessRoute } from "./middleware/accessRoute";
 // error handler middleware

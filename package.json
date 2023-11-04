@@ -4,7 +4,7 @@
   "description": "ActionSMM API Server",
   "main": "app.ts",
   "scripts": {
-    "start": "node app.ts",
+    "start": "ts-node app.ts",
     "dev": "nodemon --exec ts-node app.ts"
   },
   "keywords": [

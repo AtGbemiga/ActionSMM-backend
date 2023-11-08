@@ -5,6 +5,10 @@ import cloudinary from "../cloudinary/cloudinary";
 import multer from "multer";
 
 export const getPlan = async (req: Request, res: Response): Promise<void> => {
+  if (req.user?.role === "Official") {
+    const plan = await Plan.find({});
+    res.status(200).json({ plan });
+  }
   const plan = await Plan.find({ createdBy: req.user?.authId });
   const count = await Plan.countDocuments({ createdBy: req.user?.authId });
 
@@ -80,4 +84,37 @@ export const addPlan = async (
     const plan = await Plan.create({ ...req.body });
     res.status(201).json({ plan });
   });
+};
+
+export const updatePlan = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  // get the id of the plan from the req
+  const planId = req.params.id;
+  // get the authId of the user
+  const authId = req.user?.authId;
+
+  // filter for findOneAndUpdate
+  const filter = { _id: planId };
+  // update for findOneAndUpdate
+  const update = { ...req.body };
+
+  // check and attempt to update
+  if (req.user?.role === "Official") {
+    const plan = await Plan.findOneAndUpdate(filter, update, {
+      new: true,
+      runValidators: true,
+    });
+
+    // handle if no plan found
+    if (!plan) {
+      throw new Error("Plan not found with id " + planId);
+    }
+
+    res.status(200).json({ plan });
+  } else {
+    // handle if user is not an official
+    res.status(401).json({ error: "Unauthorized" });
+  }
 };

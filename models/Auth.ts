@@ -5,6 +5,7 @@ import jwt from "jsonwebtoken";
 interface IAuth {
   email: string;
   password: string;
+  role: "Account holder" | "Official";
   createJWT(): string;
   comparePassword(candidatePassword: string): Promise<boolean>;
 }
@@ -27,6 +28,11 @@ const AuthSchema = new mongoose.Schema<IAuth>(
       minlength: 6,
       maxlength: 64,
     },
+    role: {
+      type: String,
+      enum: ["Account holder", "Official"],
+      default: "Account holder",
+    },
   },
   { timestamps: true }
 );
@@ -42,9 +48,13 @@ AuthSchema.methods.createJWT = function () {
   if (!process.env.JWT_SECRET) {
     throw new Error("JWT_SECRET is not defined in your environment.");
   }
-  return jwt.sign({ authId: this._id }, process.env.JWT_SECRET, {
-    expiresIn: process.env.JWT_LIFETIME,
-  });
+  return jwt.sign(
+    { authId: this._id, role: this.role },
+    process.env.JWT_SECRET,
+    {
+      expiresIn: process.env.JWT_LIFETIME,
+    }
+  );
 };
 
 // compare password

@@ -6,6 +6,7 @@ declare global {
     interface Request {
       user?: {
         authId: string;
+        role: string;
       };
     }
   }
@@ -31,6 +32,7 @@ export const accessRoute = async (
     const payload = jwt.verify(token, process.env.JWT_SECRET) as JwtPayload;
     req.user = {
       authId: payload.authId,
+      role: payload.role,
     };
     next();
   } catch (error) {

@@ -9,8 +9,9 @@ export const register = async (req: Request, res: Response): Promise<void> => {
 
   // res for user
   const token = user.createJWT();
-
+  const role = user.role;
   const { email } = req.body;
+
   // nodemailerFunc(registerMsg, email);
   res.cookie("token", token, {
     httpOnly: true,
@@ -18,7 +19,7 @@ export const register = async (req: Request, res: Response): Promise<void> => {
     expires: new Date(Date.now() + 60 * 24 * 60 * 60 * 1000),
   });
 
-  res.status(201).json({ token, email });
+  res.status(201).json({ token, email, role });
 };
 
 export const login = async (
@@ -31,6 +32,8 @@ export const login = async (
     return next(new Error("Please provide email and password"));
   }
   const user = await Auth.findOne({ email });
+  // get the users role
+  const role = user?.role;
   if (!user) {
     return next(new Error("Invalid Credentials"));
   }
@@ -43,7 +46,7 @@ export const login = async (
     httpOnly: true,
     expires: new Date(Date.now() + 60 * 24 * 60 * 60 * 1000),
   });
-  res.status(200).json({ token, email });
+  res.status(200).json({ token, email, role });
 };
 
 export const logout = (req: Request, res: Response): void => {
@@ -71,4 +74,26 @@ export const resetPassword = async (
   await user.save();
 
   res.status(200).json({ token, email });
+};
+
+export const updateAccountRole = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  const { email, role } = req.body; // get email and new role from request body
+
+  if (!email || !role) {
+    res.status(400).json({ error: "Please provide email and role" });
+  }
+  const updatedUser = await Auth.findOneAndUpdate(
+    { email }, // find user by email
+    { role }, // update role
+    { new: true } // return updated user
+  );
+
+  if (!updatedUser) {
+    res.status(404).json({ error: "User not found" });
+  }
+
+  res.status(200).json(`User role updated to ${role}`); // send updated user as response
 };

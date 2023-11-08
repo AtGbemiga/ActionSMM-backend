@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
 interface IPlan {
-  planName: string;
+  planName: string; // add enum type here
   personalName: string;
   businessName: string;
   website?: string;

@@ -22,7 +22,11 @@ app.set("trust proxy", 1);
 app.use(helmet());
 app.use(
   cors({
-    origin: "http://localhost:3001",
+    origin: [
+      "http://localhost:3001",
+      "https://actionsmm.com.ng",
+      "https://www.actionsmm.com.ng",
+    ],
   })
 );
 

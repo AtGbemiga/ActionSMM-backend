@@ -8,7 +8,8 @@ export const getPlan = async (req: Request, res: Response): Promise<void> => {
   if (req.user?.role === "Official") {
     // get all plans as admin
     const plan = await Plan.find({});
-    res.status(200).json({ plan });
+    const count = await Plan.countDocuments({ createdBy: req.user?.authId });
+    res.status(200).json({ plan, count });
   } else {
     // get plans created by user
     const plan = await Plan.find({ createdBy: req.user?.authId });
@@ -92,32 +93,31 @@ export const updatePlan = async (
   req: Request,
   res: Response
 ): Promise<void> => {
-  res.send("update plan");
   // get the id of the plan from the req
-  // const planId = req.params.id;
-  // // get the authId of the user
-  // const authId = req.user?.authId;
+  const planId = req.params.id;
+  // get the authId of the user
+  const authId = req.user?.authId;
 
-  // // filter for findOneAndUpdate
-  // const filter = { _id: planId };
-  // // update for findOneAndUpdate
-  // const update = { ...req.body };
+  // filter for findOneAndUpdate
+  const filter = { _id: planId };
+  // update for findOneAndUpdate
+  const update = { ...req.body };
 
-  // // check and attempt to update
-  // if (req.user?.role === "Official") {
-  //   const plan = await Plan.findOneAndUpdate(filter, update, {
-  //     new: true,
-  //     runValidators: true,
-  //   });
+  // check and attempt to update
+  if (req.user?.role === "Official") {
+    const plan = await Plan.findOneAndUpdate(filter, update, {
+      new: true,
+      runValidators: true,
+    });
 
-  //   // handle if no plan found
-  //   if (!plan) {
-  //     throw new Error("Plan not found with id " + planId);
-  //   }
+    // handle if no plan found
+    if (!plan) {
+      throw new Error("Plan not found with id " + planId);
+    }
 
-  //   res.status(200).json({ plan });
-  // } else {
-  //   // handle if user is not an official
-  //   res.status(401).json({ error: "Unauthorized" });
-  // }
+    res.status(200).json({ plan });
+  } else {
+    // handle if user is not an official
+    res.status(401).json({ error: "Unauthorized" });
+  }
 };

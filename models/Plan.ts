@@ -116,17 +116,4 @@ const PlanSchema = new mongoose.Schema<IPlan>(
   { timestamps: true }
 );
 
-// prints in the terminal Not in Postman
-// PlanSchema.pre("save", function () {
-//   const { facebook, instagram, linkedin, x } = this.accounts;
-//   if (
-//     facebook === undefined &&
-//     instagram === undefined &&
-//     linkedin === undefined &&
-//     x === undefined
-//   ) {
-//     throw new Error("provided.");
-//   }
-// });
-
 export default mongoose.model<IPlan>("Plan", PlanSchema);

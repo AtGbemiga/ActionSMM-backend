@@ -7,6 +7,7 @@ import {
   register,
   resetPassword,
   updateAccountRole,
+  getAllAccounts,
 } from "../controllers/auth";
 import { accessRoute } from "../middleware/accessRoute";
 
@@ -15,5 +16,6 @@ router.route("/login").post(login, errorHandler);
 router.route("/logout").get(logout);
 router.route("/reset-password").post(resetPassword, errorHandler);
 router.route("/updateAccountRole").patch(accessRoute, updateAccountRole);
+router.route("/getAllAccounts").get(accessRoute, getAllAccounts);
 
 export default router;

@@ -15,6 +15,7 @@ import authRouter from "./routes/auth";
 import planRouter from "./routes/plan";
 import payStackRouter from "./routes/paystack";
 import profileRouter from "./routes/profile";
+import TokenRelatedRouter from "./routes/adminOnly/tokenRelated";
 
 app.set("trust proxy", 1);
 
@@ -23,10 +24,13 @@ app.use(helmet());
 app.use(
   cors({
     origin: [
-      "http://localhost:3001",
-      "https://actionsmm.com.ng",
-      "https://www.actionsmm.com.ng",
+      "http://localhost:3000",
+      "http://127.0.0.1:3000",
+      "http://127.0.0.1:5500", // for admin
+      "http://127.0.0.1:5173",
+      "http://localhost:5173",
     ],
+    credentials: true,
   })
 );
 
@@ -43,11 +47,12 @@ app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/plan", accessRoute, errorHandler, planRouter);
 app.use("/api/v1/paystack", payStackRouter);
 app.use("/api/v1/profile", profileRouter);
+app.use("/api/v1/admin", TokenRelatedRouter);
 
 // 404 error handler middleware
 app.all("*", notFound);
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 4192;
 
 app.listen(PORT, async (): Promise<void> => {
   if (typeof process.env.MONGO_URI === "undefined") {

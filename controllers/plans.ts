@@ -5,17 +5,10 @@ import cloudinary from "../cloudinary/cloudinary";
 import multer from "multer";
 
 export const getPlan = async (req: Request, res: Response): Promise<void> => {
-  if (req.user?.role === "Official") {
-    // get all plans as admin
-    const plan = await Plan.find({});
-    const count = await Plan.countDocuments({ createdBy: req.user?.authId });
-    res.status(200).json({ plan, count });
-  } else {
-    // get plans created by user
-    const plan = await Plan.find({ createdBy: req.user?.authId });
-    const count = await Plan.countDocuments({ createdBy: req.user?.authId });
-    res.status(200).json({ plan, count });
-  }
+  // get plans created by user
+  const plan = await Plan.find({ createdBy: req.user?.authId });
+  const count = await Plan.countDocuments({ createdBy: req.user?.authId });
+  res.status(200).json({ plan, count });
 };
 
 export const addPlan = async (
@@ -89,6 +82,7 @@ export const addPlan = async (
   });
 };
 
+/* Admin only functionality */
 export const updatePlan = async (
   req: Request,
   res: Response
@@ -120,4 +114,39 @@ export const updatePlan = async (
     // handle if user is not an official
     res.status(401).json({ error: "Unauthorized" });
   }
+};
+
+// get plans associated with by ID from email
+export const adminGetPlansByIdFromEmail = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  // return unauthorized error if user role is Account holder
+  if (req.user?.role === "Account holder") {
+    console.log(req.user.authId);
+
+    res.status(401).json({ error: "Unauthorized" });
+    return;
+  } else {
+    // find the user from the params id
+    const authId = req.params.id;
+
+    // find the plans associated with the Id
+    const plans = await Plan.find({ createdBy: authId });
+    const count = await Plan.countDocuments({ createdBy: authId });
+    res.status(200).json({ plans, count });
+  }
+};
+
+// get one plan
+export const getOnePlan = async (req: Request, res: Response) => {
+  const plan = await Plan.findById(req.params.id);
+  console.log(req.params.id);
+
+  // handle if no plan found
+  if (!plan) {
+    res.status(404).json({ error: "Plan not found with id " + req.params.id });
+  }
+
+  res.status(200).json({ plan });
 };

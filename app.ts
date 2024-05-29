@@ -16,6 +16,57 @@ import planRouter from "./routes/plan";
 import payStackRouter from "./routes/paystack";
 import profileRouter from "./routes/profile";
 import TokenRelatedRouter from "./routes/adminOnly/tokenRelated";
+import WebSocket from "ws";
+import http from "http";
+
+/**
+ * aim
+ * recieve the message from the sender
+ * save to the database
+ * send the message to the receiver
+ */
+
+// create server
+const server = http.createServer(app);
+const wss = new WebSocket.Server({
+  server,
+});
+
+wss.on("error", (error) => {
+  console.error(error);
+});
+
+wss.on(
+  "connection",
+  function connection(ws: WebSocket, request: Request, client: string) {
+    ws.on("error", console.error);
+
+    ws.on("message", function message(data) {
+      console.log(`Received message ${data} from user ${client}`);
+    });
+
+    server.on("upgrade", function upgrade(request, socket, head) {
+      socket.on("error", console.error); // TODO: Replace with a function that reports the error
+
+      // This function is not defined on purpose. Implement it with your own logic.
+      // authenticate(request, function next(err, client) {
+      //   if (err || !client) {
+      //     socket.write("HTTP/1.1 401 Unauthorized\r\n\r\n");
+      //     socket.destroy();
+      //     return;
+      //   }
+
+      //   socket.removeListener("error", console.error);
+
+      //   wss.handleUpgrade(request, socket, head, function done(ws) {
+      //     wss.emit("connection", ws, request, client);
+      //   });
+      // });
+    });
+
+    ws.send("something");
+  }
+);
 
 app.set("trust proxy", 1);
 
@@ -54,7 +105,7 @@ app.all("*", notFound);
 
 const PORT = process.env.PORT || 4192;
 
-app.listen(PORT, async (): Promise<void> => {
+server.listen(PORT, async (): Promise<void> => {
   if (typeof process.env.MONGO_URI === "undefined") {
     throw new Error("MONGO_URI is not defined");
   }
